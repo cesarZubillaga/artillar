@@ -1,0 +1,5 @@
+config:
+  target: 'http://www.google.com'
+  phases:
+    - duration: 10
+      arrivalRate: 1

@@ -1,0 +1,21 @@
+{
+  "name": "7gold-direttastadio-stress-tests",
+  "version": "1.0.0",
+  "description": "Testing Diretta Stadio WEBSITE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.1",
+    "pug": "^2.0.0-beta11",
+    "scan-folder": "^1.0.0"
+  },
+  "devDependencies": {
+    "gulp-livereload": "^3.8.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-notify": "^3.0.0"
+  }
+}

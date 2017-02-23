@@ -1,0 +1,24 @@
+{
+  "name": "7gold-direttastadio-stress-tests",
+  "description": "Testing Diretta Stadio WEBSITE",
+  "main": "index.js",
+  "authors": [
+    "César Zubillaga <Cesar.Zubillaga@arcmedia.ch>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.2",
+    "bootstrap": "^3.3.7",
+    "chart.js": "^2.5.0",
+    "angular-chart.js": "^1.1.1"
+  }
+}
