@@ -9,8 +9,10 @@ html(ng-app="app")
   body(class="container-fluid", ng-controller="TestsController")
    div(class="row", ng-init="init()")
     h1="Testing Enviroment"
-    div(class="col-xs-4")
-     table(class="table table-striped")
+    div(class="col-xs-3")
+     h2="List of runned tests"
+     p(ng-show="tests.length<=0")="No tests available"
+     table(class="table table-striped", ng-show="tests.length>0")
       caption="List of Tests"
       tr
        th="Name"
@@ -20,35 +22,49 @@ html(ng-app="app")
        td
         button(class="btn btn-success", ng-disabled="shownTests.indexOf(test) >= 0", ng-click="getStats(test)")
          i(class="glyphicon glyphicon-plus")
+        br
         button(class="btn btn-danger", ng-click="removeFile(test)")
          i(class="glyphicon glyphicon-trash")
+        br
         button(class="btn btn-default", ng-click="remove(test)")
          i(class="glyphicon glyphicon-remove")
-    div(class="col-xs-8")
-     h4="Global Stats"
+        br
+    div(class="col-xs-9")
+     h2="Global Stats"
      p(ng-show="shownTests.length<=0")="Click on the + of the list of tests that have been runned"
-     div(class="col-xs-6")
+     div(class="col-xs-4", ng-show="latency.data.length")
+      h4="Global Latency(ms)"
       canvas(id="bar", class="chart chart-bar", chart-data="latency.data", chart-labels="latency.labels", chart-series="latency.series")
-     div(class="col-xs-6")
+     div(class="col-xs-8")
+      h4="Concurrency of Users"
+      canvas(id="line", class="chart chart-line", chart-data="concurrency.data", chart-labels="concurrency.labels", chart-series="concurrency.series", cart-options="options", chart-dataset-override="datasetOverride")
+     div(class="col-xs-4", ng-show="latency.data.length")
+      h4="Global Latency(ms)"
       canvas(id="radar", class="chart chart-radar", chart-data="latency.data", chart-options="options", chart-labels="latency.labels")
      table(class="table  table-striped", ng-if="shownTests.length")
       tr
        th="Test"
-       th="Arrival Date"
+       th="Arrival Rate"
        th="Duration"
+       th="Total Users"
        th="Max"
        th="Median"
        th="Min"
        th="p95"
        th="p99"
+       th(style="min-width: 100px")="CODES"
        th="Created at"
       tr(ng-repeat="(key, value) in stats")
        td {{key}}
-       td {{value.arrivalDate}}
+       td {{value.arrivalRate}}
        td {{value.duration}}
+       td {{value.totalUsers}}
        td {{value.max}}
        td {{value.median}}
        td {{value.min}}
        td {{value.p95}}
        td {{value.p99}}
+       td
+        span(ng-repeat="(key, value) in value.codes") {{key}} - {{value}}
+         br
        td {{value.createdAt|date:'medium'}}

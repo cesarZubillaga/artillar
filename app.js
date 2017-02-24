@@ -28,7 +28,7 @@ app.get('/tests/:identifier', function (req, res) {
 
 app.delete('/tests/:identifier', function(req, res){
 	var identifier = req.params.identifier;
-	res.send('ok')
+	res.send(identifier)
 })
 //end api
 
