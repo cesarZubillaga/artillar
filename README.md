@@ -23,6 +23,7 @@ Artillar uses a number of open source projects to work properly:
 * [GulpLivereload] - for developing enviroment.
 * [Artillery] - Node testing ToolKit
 * [AngularChartJS] - Beautifull charts
+* [Livereload Extension] - For developing purposes
 
 ### Installation
 
@@ -71,3 +72,4 @@ MIT
    [GulpLivereload]: <https://github.com/vohof/gulp-livereload>
    [Artillery]: <https://artillery.io/>
    [AngularChartJS]: <http://jtblin.github.io/angular-chart.js/>
+   [Livereload Extension]: <http://livereload.com/>

@@ -1,0 +1,6 @@
+extends base.pug
+block content
+  div(ng-controller="RunnableTestsController")
+   div(class="row", ng-init="init()")
+    div(class="col-xs-12")
+     h2="List of runnable tests"

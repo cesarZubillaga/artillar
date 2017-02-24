@@ -1,0 +1,4 @@
+.idea/
+vendors/
+node_modules/
+tests/*.json

@@ -1,4 +1,7 @@
 angular.module('app', ['chart.js'])
+    .controller('RunnableTestsController',['$scope', '$http', function ($scope, $http) {
+
+    }])
     .controller('TestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.tests = {};
         $scope.stats = {};
@@ -23,8 +26,12 @@ angular.module('app', ['chart.js'])
 
         $scope.getTests = function () {
             console.log('getTests');
-            $http.get('/tests').then(function (res) {
-                $scope.tests = res.data
+            $http.get('/api/tests').then(function (res) {
+                $scope.tests = res.data;
+                $scope.getStats(res.data[0]);
+                $scope.css.wide = true;
+            }).then(function(){
+                window.status = 'ended'
             });
         };
 
@@ -32,7 +39,7 @@ angular.module('app', ['chart.js'])
             console.log('getStats');
             $scope.shownTests.push(identifier);
             $scope.shownConcurrencies.push(identifier);
-            $http.get('/tests/' + identifier).then(function (res) {
+            $http.get('/api/tests/' + identifier).then(function (res) {
                 var agg = res.data.aggregate;
                 var intermediate = res.data.intermediate;
                 $scope.buildAggregations(agg, identifier);
@@ -113,7 +120,7 @@ angular.module('app', ['chart.js'])
             };
 
             $scope.removeFile = function (identifier) {
-                $http.delete('/tests/' + identifier).then(function (res) {
+                $http.delete('/api/tests/' + identifier).then(function (res) {
                     console.log('removeFile ' + $scope.tests.indexOf(identifier));
                     $scope.remove(identifier);
                     $scope.tests.splice($scope.tests.indexOf(identifier), 1)

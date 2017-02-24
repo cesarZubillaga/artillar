@@ -1,0 +1,10 @@
+body{
+	font-family: 'Ubuntu', sans-serif;
+}
+.logo{
+	color: #21ad21;
+	border: solid 3px #21ad21;
+	padding: 5px;
+	margin: 5px;
+	border-radius: 15px 5px 5px;
+}

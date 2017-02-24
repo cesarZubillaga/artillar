@@ -2,7 +2,9 @@
   "name": "7gold-direttastadio-stress-tests",
   "version": "1.0.0",
   "description": "Testing Diretta Stadio WEBSITE",
-  "main": "index.js",
+  "main": "app.js",
+  "start": "DEBUG=electronpdf:* electron app.js",
+  "watch": "DEBUG=electronpdf:* nodemon --exec electron app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.1",
+    "js-yaml": "^3.8.1",
     "pug": "^2.0.0-beta11",
     "scan-folder": "^1.0.0"
   },
