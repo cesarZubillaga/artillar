@@ -1,6 +1,26 @@
 angular.module('app', ['chart.js'])
-    .controller('RunnableTestsController',['$scope', '$http', function ($scope, $http) {
+    .controller('RunnableTestsController', ['$scope', '$http', function ($scope, $http) {
+        $scope.runnabletests = [];
+        $scope.test = [];
+        $scope.init = function () {
+            console.log('init')
+            $http.get('/api/runnabletests').then(function (res) {
+                $scope.runnabletests = res.data;
+                $scope.readTest(1)//todo: remove
+            });
+        }
 
+        $scope.readTest = function (id) {
+            console.log('editTest ' + id)
+            $scope.test = $scope.runnabletests[id];
+            console.log($scope.test)
+        }
+
+        $scope.runTest = function (id) {
+            $http.get('/api/runnabletests/'+id).then(function (res) {
+                console.log(res);
+            });
+        }
     }])
     .controller('TestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.tests = {};
@@ -30,7 +50,7 @@ angular.module('app', ['chart.js'])
                 $scope.tests = res.data;
                 $scope.getStats(res.data[0]);
                 $scope.css.wide = true;
-            }).then(function(){
+            }).then(function () {
                 window.status = 'ended'
             });
         };

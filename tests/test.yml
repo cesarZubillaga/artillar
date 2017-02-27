@@ -1,5 +1,9 @@
 config:
-  target: 'http://www.google.com'
+  target: 'https://www.google.com'
   phases:
-    - duration: 10
+    - duration: 2
       arrivalRate: 1
+scenarios:
+  - flow:
+    - get:
+        url: "/test"

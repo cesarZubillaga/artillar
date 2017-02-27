@@ -1,8 +1,8 @@
 var express = require('express'), 
 scanFolder = require('scan-folder'),
 	yaml = require('js-yaml'),
+    artillery = require('artillery'),
 fs = require('fs');
-
 
 var app = express()
 app.get('/', function (req, res) {
@@ -14,14 +14,25 @@ app.get('/runnabletests', function (req, res) {
 //api
 var folder = __dirname+'/tests/'
 
-app.get('/api/runabletests', function (req, res) {
+app.get('/api/runnabletests', function (req, res) {
     var sTests = scanFolder(folder, 'yml')
     var identifiers = new Array()
     sTests.forEach(function(el){
         var doc = yaml.safeLoad(fs.readFileSync(el, 'utf8'));
+        doc.name =  el.slice(el.lastIndexOf('\\')+1)
         identifiers.push(doc)
     });
     res.send(identifiers);
+})
+app.get('/api/runnabletests/:identifier', function (req, res) {
+    var file = req.params.identifier;
+    var fileLocation = folder + file;
+    var date = new Date();
+    var options = {
+        output: './tests/' + date.getTime() + '_' + file.replace('.yml', '') + '.json'
+    }
+    artillery.run(fileLocation , options);
+        res.send('ok')
 })
 
 app.get('/api/tests', function (req, res) {

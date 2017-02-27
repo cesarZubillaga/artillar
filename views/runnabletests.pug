@@ -3,4 +3,33 @@ block content
   div(ng-controller="RunnableTestsController")
    div(class="row", ng-init="init()")
     div(class="col-xs-12")
-     h2="List of runnable tests"
+     h2="Runnable tests"
+    div(class="col-xs-4")
+     h4="Available"
+      table(class="table table-striped")
+       tr
+        th="Test"
+        th="Action"
+       tr(ng-repeat="(key, value) in runnabletests")
+        td {{value.name}}
+        td
+         button(class="btn btn-success", ng-disabled="value.name == test.name")
+          i(class="glyphicon glyphicon-edit", ng-click="readTest(key)")
+    div(class="col-xs-8")
+     h4="Test"
+      p(ng-show="test.length<=0")="Select a test from the table"
+      table(class="table", ng-show="test.name")
+       tr
+        th="Name"
+        th="Target"
+        th="Arrival Rate (Increase of Users/s)"
+        th="Duration (s)"
+        th="Action"
+       tr
+        td {{test.name}}
+        td {{test.config.target}}
+        td {{test.config.phases[0].arrivalRate}}
+        td {{test.config.phases[0].duration}}
+        td
+         button(class="btn btn-success", ng-click="runTest(test.name)")
+          i(class="glyphicon glyphicon-refresh")
