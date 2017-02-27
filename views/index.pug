@@ -5,13 +5,27 @@ block content
     div(class="col-xs-12")
      h2="List of runned tests"
     div(class="col-xs-3")
-     div(class="btn btn-group btn-group-justified")
-      div(Class="btn-group", role="group", ng-init="css.wide = false")
-        button(class="btn btn-success", ng-disabled="css.wide", ng-click="css.wide = !css.wide")="Show"
-         i(class="glyphicon glyphicon-eye-close")
-      div(Class="btn-group", role="group")
-        button(class="btn btn-success", ng-disabled="css.wide == false",  ng-click="css.wide = !css.wide")="Hidde"
-         i(class="glyphicon glyphicon-eye-open")
+     form(class="form-group")
+       div(class="checkbox")
+        label
+         input(type="checkbox", ng-model="css.concurrency", ng-click="putCssConfiguration()")
+         | Concurrency
+       div(class="checkbox")
+        label
+         input(type="checkbox", ng-model="css.latency.bar", ng-click="putCssConfiguration()")
+         | Latency (bars)
+       div(class="checkbox")
+        label
+         input(type="checkbox", ng-model="css.latency.radar", ng-click="putCssConfiguration()")
+         | Latency (radar)
+       div(class="checkbox")
+        label
+         input(type="checkbox", ng-model="css.table", ng-click="putCssConfiguration()")
+         | Table
+       div(class="checkbox")
+        label
+         input(type="checkbox", ng-model="css.wide", ng-click="putCssConfiguration()")
+         | Show
      p(ng-show="tests.length<=0")="No tests available"
      table(class="table table-striped", ng-show="tests.length>0 && css.wide == false")
       caption="List of Tests"
@@ -33,16 +47,16 @@ block content
     div(ng-class="{'col-xs-12': css.wide, 'col-xs-9': css.wide == false}")
      h2="Global Stats"
      p(ng-show="shownTests.length<=0")="Click on the + of the list of tests that have been runned"
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="latency.data.length")
+     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.latency.bar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="bar", class="chart chart-bar", chart-data="latency.data", chart-labels="latency.labels", chart-series="latency.series")
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="concurrency.data.length")
+     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.concurrency && concurrency.data.length")
       h4="Concurrency of Users"
       canvas(id="line", class="chart chart-line", chart-data="concurrency.data", chart-labels="concurrency.labels", chart-series="concurrency.series", cart-options="options", chart-dataset-override="datasetOverride")
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="latency.data.length")
+     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.latency.radar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="radar", class="chart chart-radar", chart-data="latency.data", chart-options="options", chart-labels="latency.labels")
-     table(class="table  table-striped", ng-if="shownTests.length")
+     table(class="table  table-striped", ng-show="css.table && shownTests.length")
       tr
        th="Test"
        th="Arrival Rate"

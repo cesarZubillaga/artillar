@@ -17,7 +17,7 @@ angular.module('app', ['chart.js'])
         }
 
         $scope.runTest = function (id) {
-            $http.get('/api/runnabletests/'+id).then(function (res) {
+            $http.put('/api/runnabletests/'+id).then(function (res) {
                 console.log(res);
             });
         }
@@ -32,6 +32,17 @@ angular.module('app', ['chart.js'])
             data: [],
             series: []
         };
+
+        $scope.css = {
+            wide: true,
+            latency: {
+                bar: true,
+                radar: true
+            },
+            concurrency: true,
+            table: true
+        }
+
         $scope.latency = {
             labels: [],
             data: [],
@@ -42,18 +53,29 @@ angular.module('app', ['chart.js'])
         $scope.init = function () {
             console.log('init');
             $scope.getTests();
+            $scope.getCssConfiguration();
         };
 
         $scope.getTests = function () {
             console.log('getTests');
             $http.get('/api/tests').then(function (res) {
                 $scope.tests = res.data;
-                $scope.getStats(res.data[0]);
                 $scope.css.wide = true;
             }).then(function () {
+                //for wkhtmltopdf: this parameter is used to trigger the pdf generation.
                 window.status = 'ended'
             });
         };
+
+        $scope.getCssConfiguration = function () {
+            $http.get('/api/cssconfiguration/tests').then(function (res) {
+                $scope.css = res.data;
+            });
+        }
+
+        $scope.putCssConfiguration = function () {
+            $http.put('/api/cssconfiguration/tests', $scope.css);
+        }
 
         $scope.getStats = function (identifier) {
             console.log('getStats');
