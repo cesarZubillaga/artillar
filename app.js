@@ -53,6 +53,7 @@ app.get('/api/tests/:identifier', function (req, res) {
 
 app.delete('/api/tests/:identifier', function(req, res){
 	var identifier = req.params.identifier;
+	fs.unlink(folder + identifier);
 	res.send(identifier)
 })
 //end api
