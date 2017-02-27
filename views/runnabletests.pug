@@ -21,12 +21,15 @@ block content
       table(class="table", ng-show="test.name")
        tr
         th="Name"
+        th="Name of the JSON test result"
         th="Target"
         th="Arrival Rate (Increase of Users/s)"
         th="Duration (s)"
         th="Action"
        tr
         td {{test.name}}
+        td
+         input(type="text", ng-model="test.testResultName", placeholder="insert a description name")
         td {{test.config.target}}
         td {{test.config.phases[0].arrivalRate}}
         td {{test.config.phases[0].duration}}

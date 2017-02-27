@@ -17,7 +17,7 @@ angular.module('app', ['chart.js'])
         }
 
         $scope.runTest = function (id) {
-            $http.put('/api/runnabletests/'+id).then(function (res) {
+            $http.put('/api/runnabletests/' + id,$scope.test).then(function (res) {
                 console.log(res);
             });
         }

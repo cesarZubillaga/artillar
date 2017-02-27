@@ -40,8 +40,9 @@ app.put('/api/runnabletests/:identifier', function (req, res) {
     var file = req.params.identifier;
     var fileLocation = folder + file;
     var date = new Date();
+    var fileName = (req.body.testResultName) ? req.body.testResultName : file.replace('.yml', '');
     var options = {
-        output: './tests/' + date.getTime() + '_' + file.replace('.yml', '') + '.json'
+        output: './tests/' + fileName + '_' + date.getTime() +'.json'
     };
     artillery.run(fileLocation , options);
     res.send('ok')
