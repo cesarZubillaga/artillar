@@ -2,3 +2,4 @@
 vendors/
 node_modules/
 tests/*.json
+tests/config/config.json

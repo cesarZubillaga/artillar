@@ -13,26 +13,66 @@ block content
        tr(ng-repeat="(key, value) in runnabletests")
         td {{value.name}}
         td
-         button(class="btn btn-success", ng-disabled="value.name == test.name")
+         button(class="btn btn-success", ng-disabled="value.name == test.name || create.active")
           i(class="glyphicon glyphicon-edit", ng-click="readTest(key)")
-    div(class="col-xs-8")
+     button(class="btn btn-success", ng-click="create.active = true")="Create new Test"
+     button(class="btn btn-warning", ng-show="create.active == true", ng-click="create.active = false")="Cancel"
+    div(class="col-xs-8", ng-show="create.active")
+     h4="Create a new test"
+     form(class="form-group", name="form" ng-submit="submit()" novalidate )
+      div(class="form-group")
+       input(type="text", class="form-control",ng-model="create.name", name="uName", placeholder="Name of the file", required="true")
+      div(ng-show="form.$submitted || form.uName.$touched")
+       span(ng-show="form.uName.$error.required")="This value is required"
+      div(class="form-group")
+       input(type="number", class="form-control",ng-model="create.duration", name="uDuration", placeholder="Duration (sec.)", required="true")
+      div(ng-show="form.$submitted || form.uDuration.$touched")
+       span(ng-show="form.uDuration.$error.required")="This value is required"
+       span(ng-show="form.uDuration.$error.number")="This value must be an integer"
+      div(class="form-group")
+       input(type="number", class="form-control",ng-model="create.arrivalRate", name="uArrivalRate", placeholder="Incr. of virtual users (n/sec.)", required="true")
+      div(ng-show="form.$submitted || form.uArrivalRate.$touched")
+       span(ng-show="form.uArrivalRate.$error.required")="This value is required"
+      div(class="form-group")
+       input(type="target", class="form-control",ng-model="create.target", placeholder="Url to attack", required="true")
+      div(class="form-group", ng-repeat="(key, value) in create.scenarios")
+       input(type="text", class="form-control",ng-model="create.scenarios[key]", ng-disabled="true", placeholder="Add scenario like /whateverrelativepath", required="true")
+       span
+        i(class="glyphicon glyphicon-minus", role="button", ng-click="removeScenario(key)")
+        | Remove Scenario
+      div(class="form-group")
+       input(type="text", class="form-control",ng-model="create.scenario", placeholder="Add scenario like /whateverrelativepath")
+       span
+        i(class="glyphicon glyphicon-plus", role="button", ng-click="addScenario()")
+        | Add Scenario
+      div(class="form-group")
+      div(class="form-group")
+       button(class="btn btn-success")="Create"
+
+    div(class="col-xs-8", ng-show="create.active == false")
      h4="Test"
-      p(ng-show="test.length<=0")="Select a test from the table"
-      table(class="table", ng-show="test.name")
-       tr
-        th="Name"
-        th="Name of the JSON test result"
-        th="Target"
-        th="Arrival Rate (Increase of Users/s)"
-        th="Duration (s)"
-        th="Action"
-       tr
-        td {{test.name}}
-        td
-         input(type="text", ng-model="test.testResultName", placeholder="insert a description name")
-        td {{test.config.target}}
-        td {{test.config.phases[0].arrivalRate}}
-        td {{test.config.phases[0].duration}}
-        td
-         button(class="btn btn-success", ng-click="runTest(test.name)")
-          i(class="glyphicon glyphicon-refresh")
+     p(ng-show="test.length<=0")="Select a test from the table"
+     table(class="table", ng-show="test.name")
+      tr
+       th="Name"
+       th="Name of the JSON test result"
+       th="Target"
+       th="Arrival Rate (Increase of Users/s)"
+       th="Duration (s)"
+       th="Flow"
+       th="Action"
+      tr
+       td {{test.name}}
+       td
+        input(type="text", ng-model="test.testResultName", placeholder="insert a description name")
+       td {{test.config.target}}
+       td {{test.config.phases[0].arrivalRate}}
+       td {{test.config.phases[0].duration}}
+       td
+        span(ng-repeat="urls in test.scenarios[0].flow")
+         span(ng-repeat="get in urls") {{ get.url }}
+          br
+          br
+       td
+        button(class="btn btn-success", ng-click="runTest(test.name)")
+         i(class="glyphicon glyphicon-refresh")

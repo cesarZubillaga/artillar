@@ -2,8 +2,6 @@ extends base.pug
 block content
   div(ng-controller="TestsController")
    div(class="row", ng-init="init()")
-    div(class="col-xs-12")
-     h2="List of runned tests"
     div(class="col-xs-12 form-inline")
      form(class="form-group")
        div(class="checkbox")
@@ -27,6 +25,7 @@ block content
          input(type="checkbox", ng-model="css.wide", ng-click="putCssConfiguration()")
          | Hide list of tests
     div(class="col-xs-3")
+     h2(ng-show="css.wide == false")="List of runned tests"
      p(ng-show="tests.length<=0")="No tests available"
      table(class="table table-striped", ng-show="tests.length>0 && css.wide == false")
       caption="List of Tests"

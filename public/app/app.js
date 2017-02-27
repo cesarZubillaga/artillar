@@ -2,11 +2,22 @@ angular.module('app', ['chart.js'])
     .controller('RunnableTestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.runnabletests = [];
         $scope.test = [];
+        $scope.create = {
+            active: null,
+            name: null,
+            duration: null,
+            arrivalRate: null,
+            target: null,
+            scenarios: []
+        }
+        $scope.form = {};
         $scope.init = function () {
-            console.log('init')
+            console.log('init');
+            $scope.create.active = false;
             $http.get('/api/runnabletests').then(function (res) {
                 $scope.runnabletests = res.data;
-                $scope.readTest(1)//todo: remove
+            console.log($scope.runnabletests[0].scenarios)
+                $scope.readTest(0)
             });
         }
 
@@ -17,9 +28,29 @@ angular.module('app', ['chart.js'])
         }
 
         $scope.runTest = function (id) {
-            $http.put('/api/runnabletests/' + id,$scope.test).then(function (res) {
+            $http.put('/api/runnabletests/' + id, $scope.test).then(function (res) {
                 console.log(res);
             });
+        }
+
+        $scope.addScenario = function () {
+            if ($scope.create.scenario) {
+                $scope.create.scenarios.push($scope.create.scenario);
+                $scope.create.scenario = '';
+            }
+        }
+
+        $scope.removeScenario = function (key) {
+            $scope.create.scenarios.splice(key, 1);
+        }
+
+
+        $scope.submit = function () {
+            if($scope.form.$valid){
+                $http.post('/api/runnabletests', $scope.create).then(function(res){
+                    $scope.init();
+                });
+            }
         }
     }])
     .controller('TestsController', ['$scope', '$http', function ($scope, $http) {
