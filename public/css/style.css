@@ -146,7 +146,7 @@ section{
 
 /*Switches*/
 .material-switch > input[type="checkbox"] {
-	display: none;
+	visibility: hidden;
 }
 
 .material-switch > label {
@@ -192,4 +192,5 @@ section{
 
 .material-switch span{
 	display: inline-block;
+	margin-left: 16px;
 }

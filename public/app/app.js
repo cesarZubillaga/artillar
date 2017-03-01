@@ -17,20 +17,19 @@ angular.module('app', ['chart.js'])
             $scope.create.active = false;
             $http.get('/api/runnabletests').then(function (res) {
                 $scope.runnabletests = res.data;
-                console.log($scope.runnabletests[0].scenarios);
-                $scope.readTest(0)
+                if ($scope.runnabletests.length) {
+                    $scope.readTest(0)
+                }
             });
         };
 
         $scope.readTest = function (id) {
             console.log('editTest ' + id);
             $scope.test = $scope.runnabletests[id];
-            console.log($scope.test)
         };
 
         $scope.runTest = function (id) {
             $http.put('/api/runnabletests/' + id, $scope.test).then(function (res) {
-                console.log(res);
             });
         };
 
@@ -109,9 +108,9 @@ angular.module('app', ['chart.js'])
             });
         };
 
-        $scope.$watch('configuration.css', function () {
+        $scope.$watch('configuration', function () {
             $scope.putConfiguration();
-        },true);
+        }, true);
 
         $scope.getConfiguration = function () {
             $http.get('/api/configuration/tests').then(function (res) {
@@ -137,7 +136,7 @@ angular.module('app', ['chart.js'])
         }
 
         $scope.getStats = function (identifier, firstLoad) {
-            console.log('getStats');
+            console.log('getStats ' + identifier + ' ' + firstLoad);
             $scope.loading = true;
             if (false == firstLoad || firstLoad == undefined) {
                 $scope.configuration.tests.push(identifier);
@@ -152,94 +151,90 @@ angular.module('app', ['chart.js'])
                 $scope.buildAggregations(agg, identifier);
                 $scope.buildConcurrency(intermediate, identifier);
             });
+        }
 
-            $scope.buildConcurrency = function (intermediate, identifier) {
-                console.log(intermediate, identifier);
-                var labels = intermediate.map(function (el) {
-                    return el.timestamp;
-                });
-                var data = intermediate.map(function (el) {
-                    return el.concurrency;
-                });
-                if ($scope.concurrency.labels.length < labels.length) {
-                    var N = labels.length;
-                    console.log(labels, labels.length);
-                    labels = Array.apply(null, {length: N}).map(Number.call, Number);
-                    $scope.concurrency.labels = labels;
-                }
-                $scope.concurrency.series.push(identifier);
-                $scope.concurrency.data.push(data);
-            };
-            $scope.removeConcurrency = function (identifier) {
-                var index = $scope.shownConcurrencies.indexOf(identifier);
-                console.log('removeConcurrency ' + index);
-                if (index >= 0) {
-                    $scope.shownConcurrencies.splice($scope.shownConcurrencies.indexOf(identifier), 1);
-                    $scope.concurrency.data.splice(index, 1);
-                    console.log($scope.concurrency[identifier]);
-                    delete($scope.concurrency[identifier])
-                }
-            };
-
-            $scope.buildAggregations = function (agg, identifier) {
-                var latency = agg.latency;
-                //table purpouses
-                var arrivalRate = agg.phases[0].arrivalRate;
-                var duration = agg.phases[0].duration;
-                var totalUsers = arrivalRate * duration;
-                console.log(arrivalRate, duration, totalUsers);
-                $scope.stats[identifier] = {
-                    arrivalRate: arrivalRate,
-                    duration: duration,
-                    totalUsers: totalUsers,
-                    max: latency.max,
-                    min: latency.min,
-                    median: latency.median,
-                    p95: latency.p95,
-                    p99: latency.p99,
-                    codes: agg.codes,
-                    createdAt: agg.timestamp
-                };
-                $scope.latency.series.push(identifier);
-                var data = [];
-                for (var index in latency) {
-                    if (latency.hasOwnProperty(index)) {
-                        if ($scope.latency.firstload) {
-                            $scope.latency.labels.push(index)
-                        }
-                        data.push(latency[index])
-                    }
-                }
-                $scope.latency.data.push(data);
-
-                $scope.latency.firstload = false;
-            };
-
-            $scope.removeAggregation = function (identifier) {
-                var index = $scope.shownTests.indexOf(identifier);
-                console.log('remove ' + index);
-                if (index >= 0) {
-                    $scope.shownTests.splice($scope.shownTests.indexOf(identifier), 1);
-                    $scope.latency.data.splice(index, 1);
-                    console.log($scope.stats[identifier]);
-                    delete($scope.stats[identifier])
-                }
-            };
-
-            $scope.removeFile = function (identifier) {
-                $http.delete('/api/tests/' + identifier).then(function (res) {
-                    console.log('removeFile ' + $scope.tests.indexOf(identifier));
-                    $scope.remove(identifier);
-                    $scope.tests.splice($scope.tests.indexOf(identifier), 1)
-                });
-            };
-
-            $scope.remove = function (identifier) {
-                $scope.removeAggregation(identifier);
-                $scope.removeConcurrency(identifier);
-                $scope.removeConfiguration(identifier);
+        $scope.buildConcurrency = function (intermediate, identifier) {
+            var labels = intermediate.map(function (el) {
+                return el.timestamp;
+            });
+            var data = intermediate.map(function (el) {
+                return el.concurrency;
+            });
+            if ($scope.concurrency.labels.length < labels.length) {
+                var N = labels.length;
+                labels = Array.apply(null, {length: N}).map(Number.call, Number);
+                $scope.concurrency.labels = labels;
             }
+            $scope.concurrency.series.push(identifier);
+            $scope.concurrency.data.push(data);
+        };
 
+        $scope.removeConcurrency = function (identifier) {
+            var index = $scope.shownConcurrencies.indexOf(identifier);
+            console.log('removeConcurrency ' + index);
+            if (index >= 0) {
+                $scope.shownConcurrencies.splice($scope.shownConcurrencies.indexOf(identifier), 1);
+                $scope.concurrency.data.splice(index, 1);
+                delete($scope.concurrency[identifier])
+            }
+        };
+
+        $scope.buildAggregations = function (agg, identifier) {
+            var latency = agg.latency;
+            //table purpouses
+            var arrivalRate = agg.phases[0].arrivalRate;
+            var duration = agg.phases[0].duration;
+            var totalUsers = arrivalRate * duration;
+            $scope.stats[identifier] = {
+                arrivalRate: arrivalRate,
+                duration: duration,
+                totalUsers: totalUsers,
+                max: latency.max,
+                min: latency.min,
+                median: latency.median,
+                p95: latency.p95,
+                p99: latency.p99,
+                codes: agg.codes,
+                createdAt: agg.timestamp
+            };
+            $scope.latency.series.push(identifier);
+            var data = [];
+            for (var index in latency) {
+                if (latency.hasOwnProperty(index)) {
+                    if ($scope.latency.firstload) {
+                        $scope.latency.labels.push(index)
+                    }
+                    data.push(latency[index])
+                }
+            }
+            $scope.latency.data.push(data);
+
+            $scope.latency.firstload = false;
+        };
+
+        $scope.removeAggregation = function (identifier) {
+            console.log('remove ' + index);
+            var index = $scope.shownTests.indexOf(identifier);
+            if (index >= 0) {
+                $scope.shownTests.splice($scope.shownTests.indexOf(identifier), 1);
+                $scope.latency.data.splice(index, 1);
+                $scope.latency.series.splice(index, 1);
+                console.log($scope.stats[identifier]);
+                delete($scope.stats[identifier])
+            }
+        };
+
+        $scope.removeFile = function (identifier) {
+            $http.delete('/api/tests/' + identifier).then(function (res) {
+                console.log('removeFile ' + $scope.tests.indexOf(identifier));
+                $scope.remove(identifier);
+                $scope.tests.splice($scope.tests.indexOf(identifier), 1)
+            });
+        };
+
+        $scope.remove = function (identifier) {
+            $scope.removeAggregation(identifier);
+            $scope.removeConcurrency(identifier);
+            $scope.removeConfiguration(identifier);
         }
     }]);
-
