@@ -106,6 +106,10 @@ angular.module('app', ['chart.js'])
             });
         };
 
+        $scope.$watch('configuration.css', function () {
+            $scope.putConfiguration();
+        },true);
+
         $scope.getConfiguration = function () {
             $http.get('/api/configuration/tests').then(function (res) {
                 $scope.configuration = res.data;
