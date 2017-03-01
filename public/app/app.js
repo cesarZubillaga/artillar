@@ -9,51 +9,56 @@ angular.module('app', ['chart.js'])
             arrivalRate: null,
             target: null,
             scenarios: []
-        }
+        };
         $scope.form = {};
         $scope.init = function () {
             console.log('init');
             $scope.create.active = false;
             $http.get('/api/runnabletests').then(function (res) {
                 $scope.runnabletests = res.data;
-            console.log($scope.runnabletests[0].scenarios)
+                console.log($scope.runnabletests[0].scenarios);
                 $scope.readTest(0)
             });
-        }
+        };
 
         $scope.readTest = function (id) {
-            console.log('editTest ' + id)
+            console.log('editTest ' + id);
             $scope.test = $scope.runnabletests[id];
             console.log($scope.test)
-        }
+        };
 
         $scope.runTest = function (id) {
             $http.put('/api/runnabletests/' + id, $scope.test).then(function (res) {
                 console.log(res);
             });
-        }
+        };
 
         $scope.addScenario = function () {
             if ($scope.create.scenario) {
                 $scope.create.scenarios.push($scope.create.scenario);
                 $scope.create.scenario = '';
             }
-        }
+        };
 
         $scope.removeScenario = function (key) {
             $scope.create.scenarios.splice(key, 1);
-        }
+        };
 
 
         $scope.submit = function () {
-            if($scope.form.$valid){
-                $http.post('/api/runnabletests', $scope.create).then(function(res){
-                    $scope.init();
+            if ($scope.form.$valid) {
+                $http.post('/api/runnabletests', $scope.create).then(function (res) {
+                    if (res.data.errors.length) {
+                        //todo: print errors
+                    } else {
+                        $scope.init();
+                    }
                 });
             }
         }
     }])
     .controller('TestsController', ['$scope', '$http', function ($scope, $http) {
+        $scope.loading = false;
         $scope.tests = {};
         $scope.stats = {};
         $scope.shownTests = [];
@@ -64,15 +69,18 @@ angular.module('app', ['chart.js'])
             series: []
         };
 
-        $scope.css = {
-            wide: true,
-            latency: {
-                bar: true,
-                radar: true
+        $scope.configuration = {
+            css: {
+                wide: true,
+                latency: {
+                    bar: true,
+                    radar: true
+                },
+                concurrency: true,
+                table: true
             },
-            concurrency: true,
-            table: true
-        }
+            tests: []
+        };
 
         $scope.latency = {
             labels: [],
@@ -84,35 +92,54 @@ angular.module('app', ['chart.js'])
         $scope.init = function () {
             console.log('init');
             $scope.getTests();
-            $scope.getCssConfiguration();
+            $scope.getConfiguration();
         };
 
         $scope.getTests = function () {
             console.log('getTests');
             $http.get('/api/tests').then(function (res) {
                 $scope.tests = res.data;
-                $scope.css.wide = true;
+                $scope.configuration.css.wide = true;
             }).then(function () {
                 //for wkhtmltopdf: this parameter is used to trigger the pdf generation.
                 window.status = 'ended'
             });
         };
 
-        $scope.getCssConfiguration = function () {
-            $http.get('/api/cssconfiguration/tests').then(function (res) {
-                $scope.css = res.data;
+        $scope.getConfiguration = function () {
+            $http.get('/api/configuration/tests').then(function (res) {
+                $scope.configuration = res.data;
+                if ($scope.configuration.tests.length) {
+                    $scope.configuration.tests.forEach(function (el) {
+                        $scope.getStats(el, true);
+                    })
+                }
             });
+        };
+
+        $scope.putConfiguration = function () {
+            $scope.loading = true;
+            $http.put('/api/configuration/tests', $scope.configuration).then(function (res) {
+                $scope.loading = false;
+            });
+        };
+
+        $scope.removeConfiguration = function (identifier) {
+            $scope.configuration.tests.splice(identifier, 1);
+            $scope.putConfiguration();
         }
 
-        $scope.putCssConfiguration = function () {
-            $http.put('/api/cssconfiguration/tests', $scope.css);
-        }
-
-        $scope.getStats = function (identifier) {
+        $scope.getStats = function (identifier, firstLoad) {
             console.log('getStats');
+            $scope.loading = true;
+            if (false == firstLoad || firstLoad == undefined) {
+                $scope.configuration.tests.push(identifier);
+                $scope.putConfiguration();
+            }
             $scope.shownTests.push(identifier);
             $scope.shownConcurrencies.push(identifier);
             $http.get('/api/tests/' + identifier).then(function (res) {
+                $scope.loading = false;
                 var agg = res.data.aggregate;
                 var intermediate = res.data.intermediate;
                 $scope.buildAggregations(agg, identifier);
@@ -203,6 +230,7 @@ angular.module('app', ['chart.js'])
             $scope.remove = function (identifier) {
                 $scope.removeAggregation(identifier);
                 $scope.removeConcurrency(identifier);
+                $scope.removeConfiguration(identifier);
             }
 
         }

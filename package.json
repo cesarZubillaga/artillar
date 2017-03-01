@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "artillery": "^1.5.2",
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
     "js-yaml": "^3.8.1",

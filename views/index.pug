@@ -1,33 +1,33 @@
 extends base.pug
 block content
-  div(ng-controller="TestsController")
+  div(ng-controller="TestsController", ng-show="loading == false")
    div(class="row", ng-init="init()")
     div(class="col-xs-12 form-inline")
      form(class="form-group")
        div(class="checkbox")
         label
-         input(type="checkbox", ng-model="css.concurrency", ng-click="putCssConfiguration()")
+         input(type="checkbox", ng-model="configuration.css.concurrency", ng-click="putConfiguration()")
          | Concurrency
        div(class="checkbox")
         label
-         input(type="checkbox", ng-model="css.latency.bar", ng-click="putCssConfiguration()")
+         input(type="checkbox", ng-model="configuration.css.latency.bar", ng-click="putConfiguration()")
          | Latency (bars)
        div(class="checkbox")
         label
-         input(type="checkbox", ng-model="css.latency.radar", ng-click="putCssConfiguration()")
+         input(type="checkbox", ng-model="configuration.css.latency.radar", ng-click="putConfiguration()")
          | Latency (radar)
        div(class="checkbox")
         label
-         input(type="checkbox", ng-model="css.table", ng-click="putCssConfiguration()")
+         input(type="checkbox", ng-model="configuration.css.table", ng-click="putConfiguration()")
          | Table
        div(class="checkbox")
         label
-         input(type="checkbox", ng-model="css.wide", ng-click="putCssConfiguration()")
+         input(type="checkbox", ng-model="configuration.css.wide", ng-click="putConfiguration()")
          | Hide list of tests
     div(class="col-xs-3")
-     h2(ng-show="css.wide == false")="List of runned tests"
+     h2(ng-show="configuration.css.wide == false")="List of runned tests"
      p(ng-show="tests.length<=0")="No tests available"
-     table(class="table table-striped", ng-show="tests.length>0 && css.wide == false")
+     table(class="table table-striped", ng-show="tests.length>0 && configuration.css.wide == false")
       caption="List of Tests"
       tr
        th="Name"
@@ -44,19 +44,19 @@ block content
         button(class="btn btn-default", ng-click="remove(test)")
          i(class="glyphicon glyphicon-remove")
         br
-    div(ng-class="{'col-xs-12': css.wide, 'col-xs-9': css.wide == false}")
+    div(ng-class="{'col-xs-12': configuration.css.wide, 'col-xs-9': configuration.css.wide == false}")
      h2="Global Stats"
      p(ng-show="shownTests.length<=0")="Click on the + of the list of tests that have been runned"
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.latency.bar && latency.data.length")
+     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.latency.bar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="bar", class="chart chart-bar", chart-data="latency.data", chart-labels="latency.labels", chart-series="latency.series")
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.concurrency && concurrency.data.length")
+     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.concurrency && concurrency.data.length")
       h4="Concurrency of Users"
       canvas(id="line", class="chart chart-line", chart-data="concurrency.data", chart-labels="concurrency.labels", chart-series="concurrency.series", cart-options="options", chart-dataset-override="datasetOverride")
-     div(ng-class="{'col-xs-4': css.wide}", ng-show="css.latency.radar && latency.data.length")
+     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.latency.radar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="radar", class="chart chart-radar", chart-data="latency.data", chart-options="options", chart-labels="latency.labels")
-     table(class="table  table-striped", ng-show="css.table && shownTests.length")
+     table(class="table  table-striped", ng-show="configuration.css.table && shownTests.length")
       tr
        th="Test"
        th="Arrival Rate"

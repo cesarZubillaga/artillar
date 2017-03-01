@@ -110,13 +110,13 @@ app.delete('/api/tests/:identifier', function (req, res) {
     res.send(identifier)
 });
 
-var cssConfigurationFile = folder + 'config/config.json';
-app.get('/api/cssconfiguration/tests', function (req, res) {
-    res.send(jsonfile.readFileSync(cssConfigurationFile));
+var configurationFile = folder + 'config/config.json';
+app.get('/api/configuration/tests', function (req, res) {
+    res.send(jsonfile.readFileSync(configurationFile));
 });
 
-app.put('/api/cssconfiguration/tests', function (req, res) {
-    jsonfile.writeFileSync(cssConfigurationFile, req.body);
+app.put('/api/configuration/tests', function (req, res) {
+    jsonfile.writeFileSync(configurationFile, req.body);
     res.send('ok');
 });
 //end api

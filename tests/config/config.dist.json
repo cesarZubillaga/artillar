@@ -1,10 +1,13 @@
 //rename this file to config.json so we can remember the state of the statistics display
 {
-  "wide": true,
-  "latency": {
-    "bar": true,
-    "radar": true
+  "css": {
+    "wide": false,
+    "latency": {
+      "bar": true,
+      "radar": true
+    },
+    "concurrency": true,
+    "table": true
   },
-  "concurrency": true,
-  "table": true
+  "tests": []
 }
