@@ -31,19 +31,16 @@ block content
      table(class="table table-striped", ng-show="tests.length>0 && configuration.css.wide == false")
       tr
        th="Name"
-       th="Action"
+       th(style="min-width: 130px;")="Action"
       tr(ng-repeat="test in tests")
        td {{test}}
        td
-        button(class="btn btn-success", ng-disabled="shownTests.indexOf(test) >= 0", ng-click="getStats(test)")
+        button(class="btn btn-sm btn-success", ng-disabled="shownTests.indexOf(test) >= 0", ng-click="getStats(test)")
          i(class="glyphicon glyphicon-plus")
-        br
-        button(class="btn btn-danger", ng-click="removeFile(test)")
+        button(class="btn btn-sm btn-danger", ng-click="removeFile(test)")
          i(class="glyphicon glyphicon-trash")
-        br
-        button(class="btn btn-default", ng-click="remove(test)")
+        button(class="btn btn-sm btn-default", ng-click="remove(test)", ng-disabled="shownTests.indexOf(test)<0")
          i(class="glyphicon glyphicon-remove")
-        br
     div(ng-class="{'col-xs-12': configuration.css.wide, 'col-xs-9': configuration.css.wide == false}")
      h4="Global Stats"
      p(ng-show="shownTests.length<=0")="Click on the + of the list of tests that have been runned"

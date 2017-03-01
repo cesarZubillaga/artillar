@@ -7,10 +7,6 @@ This website tester it is prepared for checking the behaviour of your website re
   
 Those values are displayed with two types of graphics (bars and radar) and a table, and you can add/delete those graphics with simple interface.
 
-### TODOs!
-  - New interface for preparing and running tests.
-  - Display the rest of the data available thanks to [Artillery] reports.
-
 ### Tech
 
 Artillar uses a number of open source projects to work properly:
@@ -27,28 +23,18 @@ Artillar uses a number of open source projects to work properly:
 
 ### Installation
 
-Install the dependencies.
+You need to have NODE and BOWER installed. For dev purpouses you need GULP but no mandatory.
 
 ```sh
 $ npm install
 $ bower install
 ```
 ### Runing tests
-To run the tests you have to first install [Artillery].
-```sh
-$ npm install artillery -g
-```
-Then run a sample tests with a YAML file configuration.
-```sh
-$ cd tests
-$ artillery test.yml
-```
-Check the results.
-```sh
-$ cd ..
-$ node app.js
-```
-All the JSON test files MUST be located on the test folder in the root folder.
+There's a sample test on the Runnable Tests to check out.
+
+### TODOs!
+  - Data from the sever.
+  - Display the rest of the data available thanks to [Artillery] reports.
 
 License
 ----

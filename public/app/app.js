@@ -1,7 +1,6 @@
 angular.module('app', ['chart.js'])
     .controller('RunnableTestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.runnabletests = [];
-        $scope.loading = false;
         $scope.test = [];
         $scope.create = {
             active: null,
@@ -14,12 +13,14 @@ angular.module('app', ['chart.js'])
         $scope.form = {};
         $scope.init = function () {
             console.log('init');
+            $scope.$emit('loading');
             $scope.create.active = false;
             $http.get('/api/runnabletests').then(function (res) {
                 $scope.runnabletests = res.data;
                 if ($scope.runnabletests.length) {
                     $scope.readTest(0)
                 }
+                $scope.$emit('endLoading');
             });
         };
 
@@ -29,7 +30,9 @@ angular.module('app', ['chart.js'])
         };
 
         $scope.runTest = function (id) {
+            $scope.$emit('loading');
             $http.put('/api/runnabletests/' + id, $scope.test).then(function (res) {
+                $scope.$emit('endLoading');
             });
         };
 
@@ -47,20 +50,20 @@ angular.module('app', ['chart.js'])
 
         $scope.submit = function () {
             if ($scope.form.$valid) {
-                $scope.loading = true;
+                $scope.$emit('loading');
                 $http.post('/api/runnabletests', $scope.create).then(function (res) {
                     if (res.data.errors != undefined) {
                         //todo: print errors
                     } else {
                         $scope.init();
                     }
-                    $scope.loading = false;
+                    $scope.$emit('endLoading');
+                    ;
                 });
             }
         }
     }])
     .controller('TestsController', ['$scope', '$http', function ($scope, $http) {
-        $scope.loading = false;
         $scope.tests = {};
         $scope.stats = {};
         $scope.shownTests = [];
@@ -124,9 +127,9 @@ angular.module('app', ['chart.js'])
         };
 
         $scope.putConfiguration = function () {
-            $scope.loading = true;
+            $scope.$emit('loading');
             $http.put('/api/configuration/tests', $scope.configuration).then(function (res) {
-                $scope.loading = false;
+                $scope.$emit('endLoading');
             });
         };
 
@@ -137,7 +140,8 @@ angular.module('app', ['chart.js'])
 
         $scope.getStats = function (identifier, firstLoad) {
             console.log('getStats ' + identifier + ' ' + firstLoad);
-            $scope.loading = true;
+            $scope.$emit('loading');
+            ;
             if (false == firstLoad || firstLoad == undefined) {
                 $scope.configuration.tests.push(identifier);
                 $scope.putConfiguration();
@@ -145,7 +149,8 @@ angular.module('app', ['chart.js'])
             $scope.shownTests.push(identifier);
             $scope.shownConcurrencies.push(identifier);
             $http.get('/api/tests/' + identifier).then(function (res) {
-                $scope.loading = false;
+                $scope.$emit('endLoading');
+                ;
                 var agg = res.data.aggregate;
                 var intermediate = res.data.intermediate;
                 $scope.buildAggregations(agg, identifier);
@@ -225,10 +230,12 @@ angular.module('app', ['chart.js'])
         };
 
         $scope.removeFile = function (identifier) {
+            $scope.$emit('loading');
             $http.delete('/api/tests/' + identifier).then(function (res) {
                 console.log('removeFile ' + $scope.tests.indexOf(identifier));
                 $scope.remove(identifier);
                 $scope.tests.splice($scope.tests.indexOf(identifier), 1)
+                $scope.$emit('endLoading');
             });
         };
 
@@ -237,4 +244,14 @@ angular.module('app', ['chart.js'])
             $scope.removeConcurrency(identifier);
             $scope.removeConfiguration(identifier);
         }
-    }]);
+    }])
+    .controller('ParentController', ['$scope', function ($scope) {
+        $scope.loading = false;
+        $scope.$on('loading', function (ev) {
+            $scope.loading = true;
+        });
+        $scope.$on('endLoading', function (ev) {
+            $scope.loading = false;
+        });
+    }])
+;

@@ -39,7 +39,7 @@ app.get('/api/runnabletests', function (req, res) {
 
 app.post('/api/runnabletests', function (req, res) {
     var runnabletest = req.body;
-    console.log(runnabletest.name + '.yml')
+    console.log(runnabletest.name + '.yml');
     var yamlrunnabletest = {
         config: {
             target: runnabletest.target,
@@ -47,9 +47,10 @@ app.post('/api/runnabletests', function (req, res) {
         },
         scenarios: []
     }
+    var duration = runnabletest.duration;
     yamlrunnabletest.config.phases.push(
         {
-            duration: runnabletest.duration,
+            duration: duration,
             arrivalRate: runnabletest.arrivalRate
         }
     );
@@ -71,7 +72,9 @@ app.post('/api/runnabletests', function (req, res) {
     }
     var yamlConfigFile = yaml.dump(yamlrunnabletest);
     fs.writeFileSync(folder + runnabletest.name + '.yml', yamlConfigFile);
-    res.send('Ok');
+    setTimeout(function () {
+        res.send('Ok');
+    },duration*1000)
 });
 
 app.put('/api/runnabletests/:identifier', function (req, res) {
@@ -82,8 +85,11 @@ app.put('/api/runnabletests/:identifier', function (req, res) {
     var options = {
         output: './tests/' + fileName + '_' + date.getTime() + '.json'
     };
+    var doc = yaml.safeLoad(fs.readFileSync(fileLocation, 'utf8'));
     artillery.run(fileLocation, options);
-    res.send('ok')
+    setTimeout(function () {
+        res.send('Ok');
+    },doc.config.phases[0].duration*1000);
 });
 
 app.get('/api/tests', function (req, res) {

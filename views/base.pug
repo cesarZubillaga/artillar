@@ -10,28 +10,31 @@ html(ng-app="app")
         link(rel="stylesheet", type="text/css", href='/bootstrap/dist/css/bootstrap.min.css')
         link(href="https://fonts.googleapis.com/css?family=Ubuntu", rel="stylesheet")
         link(href="/css/style.css", rel="stylesheet")
-    body
-        nav(class="navbar navbar-default sidebar", role="navigation")
-            div(class="container-fluid")
-                div(class="navbar-header")
-                    button(type="button", class="navbar-toggle", data-toggle="collapse", data-target="#bs-sidebar-navbar-collapse-1")
-                        span(class="sr-only") Toggle navigation
-                        span(class="icon-bar")
-                        span(class="icon-bar")
-                        span(class="icon-bar")
-                div(class="collapse navbar-collapse", id="bs-sidebar-navbar-collapse-1")
-                    ul(class="nav navbar-nav")
-                        li
-                            a(href="#")
-                                | Artillar Testing
-                                span(class="pull-right hidden-xs showopacity glyphicon glyphicon-signal logo")
-                        li
-                            a(href="/")
-                                | Data
-                                span(class="pull-right hidden-xs showopacity glyphicon glyphicon-floppy-disk")
-                        li
-                            a(href="/runnabletests")
-                                | Runable Tests
-                                span(class="pull-right hidden-xs showopacity glyphicon glyphicon-tasks")
-        div(class="container-fluid content")
-            block content
+    body(ng-controller="ParentController")
+        div(class="loading", ng-show="loading")
+            img(src="/img/loading.gif")
+        div(ng-show="loading == false")
+            nav(class="navbar navbar-default sidebar", role="navigation")
+                div(class="container-fluid")
+                    div(class="navbar-header")
+                        button(type="button", class="navbar-toggle", data-toggle="collapse", data-target="#bs-sidebar-navbar-collapse-1")
+                            span(class="sr-only") Toggle navigation
+                            span(class="icon-bar")
+                            span(class="icon-bar")
+                            span(class="icon-bar")
+                    div(class="collapse navbar-collapse", id="bs-sidebar-navbar-collapse-1")
+                        ul(class="nav navbar-nav")
+                            li
+                                a(href="#")
+                                    | Artillar Testing
+                                    span(class="pull-right hidden-xs showopacity glyphicon glyphicon-signal logo")
+                            li
+                                a(href="/")
+                                    | Data
+                                    span(class="pull-right hidden-xs showopacity glyphicon glyphicon-floppy-disk")
+                            li
+                                a(href="/runnabletests")
+                                    | Runable Tests
+                                    span(class="pull-right hidden-xs showopacity glyphicon glyphicon-tasks")
+            div(class="container-fluid content")
+                block content
