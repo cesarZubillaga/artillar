@@ -1,6 +1,7 @@
 angular.module('app', ['chart.js'])
     .controller('RunnableTestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.runnabletests = [];
+        $scope.loading = false;
         $scope.test = [];
         $scope.create = {
             active: null,
@@ -47,12 +48,14 @@ angular.module('app', ['chart.js'])
 
         $scope.submit = function () {
             if ($scope.form.$valid) {
+                $scope.loading = true;
                 $http.post('/api/runnabletests', $scope.create).then(function (res) {
-                    if (res.data.errors.length) {
+                    if (res.data.errors != undefined) {
                         //todo: print errors
                     } else {
                         $scope.init();
                     }
+                    $scope.loading = false;
                 });
             }
         }

@@ -1,7 +1,7 @@
 extends base.pug
 block content
   div(ng-controller="RunnableTestsController")
-   div(class="row", ng-init="init()")
+   div(class="row", ng-init="init()", ng-show="loading == false")
     div(class="col-xs-12")
      h3="Runnable tests"
     div(class="col-xs-4")
