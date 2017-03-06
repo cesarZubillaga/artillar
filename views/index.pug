@@ -44,13 +44,13 @@ block content
     div(ng-class="{'col-xs-12': configuration.css.wide, 'col-xs-9': configuration.css.wide == false}")
      h4="Global Stats"
      p(ng-show="shownTests.length<=0")="Click on the + of the list of tests that have been runned"
-     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.latency.bar && latency.data.length")
+     div(ng-class="canvasClass()", ng-show="configuration.css.latency.bar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="bar", class="chart chart-bar", chart-data="latency.data", chart-labels="latency.labels", chart-series="latency.series")
-     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.concurrency && concurrency.data.length")
+     div(ng-class="canvasClass()", ng-show="configuration.css.concurrency && concurrency.data.length")
       h4="Concurrency of Users"
       canvas(id="line", class="chart chart-line", chart-data="concurrency.data", chart-labels="concurrency.labels", chart-series="concurrency.series", cart-options="options", chart-dataset-override="datasetOverride")
-     div(ng-class="{'col-xs-4': configuration.css.wide}", ng-show="configuration.css.latency.radar && latency.data.length")
+     div(ng-class="canvasClass()", ng-show="configuration.css.latency.radar && latency.data.length")
       h4="Global Latency(ms)"
       canvas(id="radar", class="chart chart-radar", chart-data="latency.data", chart-options="options", chart-labels="latency.labels")
      table(class="table  table-striped", ng-show="configuration.css.table && shownTests.length")

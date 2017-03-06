@@ -76,6 +76,7 @@ angular.module('app', ['chart.js'])
 
         $scope.configuration = {
             css: {
+                canvasClass: 3,
                 wide: true,
                 latency: {
                     bar: true,
@@ -100,6 +101,14 @@ angular.module('app', ['chart.js'])
             $scope.getConfiguration();
         };
 
+        $scope.canvasClass = function () {
+            var bootstrapClass = 0;
+            bootstrapClass += $scope.configuration.css.latency.bar ? 1 : 0;
+            bootstrapClass += $scope.configuration.css.latency.radar ? 1 : 0;
+            bootstrapClass += $scope.configuration.css.concurrency ? 1 : 0;
+            bootstrapClass = bootstrapClass == 0 ? 1 : bootstrapClass;
+            return 'col-xs-' + (12 /bootstrapClass);
+        }
         $scope.getTests = function () {
             console.log('getTests');
             $http.get('/api/tests').then(function (res) {
