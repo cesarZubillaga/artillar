@@ -32,6 +32,8 @@ app.get('/api/runnabletests', function (req, res) {
     sTests.forEach(function (el) {
         var doc = yaml.safeLoad(fs.readFileSync(el, 'utf8'));
         doc.name = el.slice(el.lastIndexOf('\\') + 1);
+        //nasty
+        doc.name = doc.name.slice(doc.name.lastIndexOf("/") + 1);
         identifiers.push(doc)
     });
     res.send(identifiers);
@@ -56,13 +58,13 @@ app.post('/api/runnabletests', function (req, res) {
     );
     yamlrunnabletest.scenarios.push({flow: []});
     if(runnabletest.scenarios.length){
-    runnabletest.scenarios.forEach(function (el) {
-        yamlrunnabletest.scenarios[0].flow.push({
-            get: {
-                url: el
-            }
-        });
-    })
+        runnabletest.scenarios.forEach(function (el) {
+            yamlrunnabletest.scenarios[0].flow.push({
+                get: {
+                    url: el
+                }
+            });
+        })
     }else{
         yamlrunnabletest.scenarios[0].flow.push({
             get: {
@@ -97,6 +99,7 @@ app.get('/api/tests', function (req, res) {
     var identifiers = [];
     sTests.forEach(function (el) {
         el = el.slice(el.lastIndexOf('\\') + 1);
+        el = el.slice(el.lastIndexOf('/') + 1);
         identifiers.push(el)
     });
     res.send(identifiers);
