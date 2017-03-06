@@ -109,6 +109,7 @@ angular.module('app', ['chart.js'])
             bootstrapClass = bootstrapClass == 0 ? 1 : bootstrapClass;
             return 'col-xs-' + (12 /bootstrapClass);
         }
+
         $scope.getTests = function () {
             console.log('getTests');
             $http.get('/api/tests').then(function (res) {
