@@ -13,8 +13,8 @@ block content
        tr(ng-repeat="(key, value) in runnabletests")
         td {{value.name}}
         td
-         button(class="btn btn-success", ng-disabled="value.name == test.name || create.active")
-          i(class="glyphicon glyphicon-edit", ng-click="readTest(key)")
+         button(class="btn btn-success", ng-click="readTest(key)", ng-disabled="value.name == test.name || create.active")
+          i(class="glyphicon glyphicon-edit")
      button(class="btn btn-success", ng-click="create.active = true")="Create new Test"
      button(class="btn btn-warning", ng-show="create.active == true", ng-click="create.active = false")="Cancel"
     div(class="col-xs-8", ng-show="create.active")
