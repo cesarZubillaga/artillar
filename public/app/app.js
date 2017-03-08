@@ -1,4 +1,7 @@
-angular.module('app', ['chart.js'])
+var socket = io.connect('http://localhost:3000', {'forceNew': true});
+
+
+angular.module('app', ['chart.js', 'ui.bootstrap'])
     .controller('RunnableTestsController', ['$scope', '$http', function ($scope, $http) {
         $scope.runnabletests = [];
         $scope.test = [];
@@ -28,12 +31,9 @@ angular.module('app', ['chart.js'])
             console.log('editTest ' + id);
             $scope.test = $scope.runnabletests[id];
         };
-
         $scope.runTest = function (id) {
-            $scope.$emit('loading');
-            $http.put('/api/runnabletests/' + id, $scope.test).then(function (res) {
-                $scope.$emit('endLoading');
-            });
+            console.log('runTest')
+            socket.emit('runnabletests', {id: id, test: $scope.test});
         };
 
         $scope.addScenario = function () {
@@ -107,7 +107,7 @@ angular.module('app', ['chart.js'])
             bootstrapClass += $scope.configuration.css.latency.radar ? 1 : 0;
             bootstrapClass += $scope.configuration.css.concurrency ? 1 : 0;
             bootstrapClass = bootstrapClass == 0 ? 1 : bootstrapClass;
-            return 'col-xs-' + (12 /bootstrapClass);
+            return 'col-xs-' + (12 / bootstrapClass);
         }
 
         $scope.getTests = function () {
@@ -255,13 +255,42 @@ angular.module('app', ['chart.js'])
             $scope.removeConfiguration(identifier);
         }
     }])
-    .controller('ParentController', ['$scope', function ($scope) {
+    .controller('ParentController', ['$scope', '$uibModal', function ($scope, $uibModal) {
         $scope.loading = false;
+        $scope.modalInstance = null;
+        $scope.init = function () {
+            $scope.socket = {
+                name: 'Socket Messages',
+                messages: ['askdfl']
+            }
+        }
+
+        $scope.init();
+
         $scope.$on('loading', function (ev) {
             $scope.loading = true;
         });
         $scope.$on('endLoading', function (ev) {
             $scope.loading = false;
         });
+        $scope.ok = function () {
+            $scope.modalInstance.close();
+            $scope.modalInstance = null;
+            $scope.init();
+        }
+        socket.on('messages', function (data) {
+            if (null == $scope.modalInstance) {
+                $scope.modalInstance = $uibModal.open({
+                    // animation: $ctrl.animationsEnabled,
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: '/app/templates/modal.html',
+                    scope: $scope,
+                });
+            }
+            $scope.$apply(function () {
+                $scope.socket.messages.push(data)
+            })
+        })
     }])
 ;

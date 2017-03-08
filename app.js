@@ -1,14 +1,19 @@
+//configure express and sockets
 var express = require('express'),
-    scanFolder = require('scan-folder'),
-    yaml = require('js-yaml'),
-    artillery = require('artillery'),
+    app = express(),
+    server = app.listen(3000, function () {
+    }),
+    io = require('socket.io')(server);
+
+var yaml = require('js-yaml'),
     jsonfile = require('jsonfile'),
     bodyParser = require('body-parser'),
+    scanFolder = require('scan-folder'),
     fs = require('fs');
 
-var app = express();
-//configuration
 
+var exec = require('child_process').exec;
+//configuration
 //set pug (jade) as template engine
 app.set('view engine', 'pug');
 //folders for assets
@@ -41,7 +46,6 @@ app.get('/api/runnabletests', function (req, res) {
 
 app.post('/api/runnabletests', function (req, res) {
     var runnabletest = req.body;
-    console.log(runnabletest.name + '.yml');
     var yamlrunnabletest = {
         config: {
             target: runnabletest.target,
@@ -57,7 +61,7 @@ app.post('/api/runnabletests', function (req, res) {
         }
     );
     yamlrunnabletest.scenarios.push({flow: []});
-    if(runnabletest.scenarios.length){
+    if (runnabletest.scenarios.length) {
         runnabletest.scenarios.forEach(function (el) {
             yamlrunnabletest.scenarios[0].flow.push({
                 get: {
@@ -65,7 +69,7 @@ app.post('/api/runnabletests', function (req, res) {
                 }
             });
         })
-    }else{
+    } else {
         yamlrunnabletest.scenarios[0].flow.push({
             get: {
                 url: "/"
@@ -76,23 +80,24 @@ app.post('/api/runnabletests', function (req, res) {
     fs.writeFileSync(folder + runnabletest.name + '.yml', yamlConfigFile);
     setTimeout(function () {
         res.send('Ok');
-    },duration*1000)
+    }, duration * 1000)
 });
 
-app.put('/api/runnabletests/:identifier', function (req, res) {
-    var file = req.params.identifier;
-    var fileLocation = folder + file;
-    var date = new Date();
-    var fileName = (req.body.testResultName) ? req.body.testResultName : file.replace('.yml', '');
-    var options = {
-        output: './tests/' + fileName + '_' + date.getTime() + '.json'
-    };
-    var doc = yaml.safeLoad(fs.readFileSync(fileLocation, 'utf8'));
-    artillery.run(fileLocation, options);
-    setTimeout(function () {
-        res.send('Ok');
-    },doc.config.phases[0].duration*1000);
-});
+//sockets
+io.on('connection', function (socket) {
+    socket.on('runnabletests', function (data) {
+        var file = data.id;
+        var date = new Date();
+        var fileName = (data.test.testResultName) ? data.test.testResultName : file.replace('.yml', '');
+        var output = './tests/' + fileName + '_' + date.getTime() + '.json';
+        var command = 'artillery run tests/'+file+' --output='+output;
+        var child = exec(command);
+        child.stdout.on('data', function(data) {
+            io.emit('messages', data)
+        });
+    });
+})
+
 
 app.get('/api/tests', function (req, res) {
     var sTests = scanFolder(folder, 'json', false);
@@ -129,7 +134,3 @@ app.put('/api/configuration/tests', function (req, res) {
     res.send('ok');
 });
 //end api
-
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!')
-});
