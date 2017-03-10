@@ -82,13 +82,14 @@ app.post('/api/runnabletests', function (req, res) {
         res.send('Ok');
     }, duration * 1000)
 });
-
+fileName = ' asdf asdf asdf asdf ';
+console.log();
 //sockets
 io.on('connection', function (socket) {
     socket.on('runnabletests', function (data) {
         var file = data.id;
         var date = new Date();
-        var fileName = (data.test.testResultName) ? data.test.testResultName : file.replace('.yml', '');
+        var fileName = (data.test.testResultName) ? data.test.testResultName.split(" ").join('-') : file.replace('.yml', '');
         var output = './tests/' + fileName + '_' + date.getTime() + '.json';
         var command = 'artillery run tests/'+file+' --output='+output;
         var child = exec(command);
