@@ -82,8 +82,7 @@ app.post('/api/runnabletests', function (req, res) {
         res.send('Ok');
     }, duration * 1000)
 });
-fileName = ' asdf asdf asdf asdf ';
-console.log();
+
 //sockets
 io.on('connection', function (socket) {
     socket.on('runnabletests', function (data) {
